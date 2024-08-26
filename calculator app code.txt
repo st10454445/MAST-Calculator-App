@@ -1,0 +1,165 @@
+import React, { useState } from 'react';
+import { Text, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+
+export default function CalculatorApp() {
+  const [value1, setValue1] = useState('');
+  const [value2, setValue2] = useState('');
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
+
+  const handleOperation = (operation) => {
+    const num1 = parseFloat(value1);
+    const num2 = parseFloat(value2);
+
+    setError('');
+
+    if (isNaN(num1) || (isNaN(num2) && operation !== 'sqrt')) {
+      setError('Please enter valid numbers');
+      return;
+    }
+
+    if (operation === '/' && num2 === 0) {
+      setError('ERROR: CANNOT DIVIDE BY ZERO');
+      return;
+    }
+
+    let calcResult;
+
+    switch (operation) {
+      case '+':
+        calcResult = num1 + num2;
+        break;
+      case '-':
+        calcResult = num1 - num2;
+        break;
+      case 'x':
+        calcResult = num1 * num2;
+        break;
+      case '/':
+        calcResult = num1 / num2;
+        break;
+      case '^':
+        calcResult = Math.pow(num1, num2);
+        break;
+      case 'sqrt':
+        calcResult = Math.sqrt(num1);
+        break;
+      case 'C':
+        setValue1('');
+        setValue2('');
+        setResult(null);
+        setError('');
+        return;
+      default:
+        return;
+    }
+
+    setResult(calcResult);
+  };
+
+  return (
+    <View style={styles.container}>
+        <View style={styles.calcAppText}>My Calculator App</View>
+      <TextInput
+        style={styles.valueBox}
+        placeholder="Enter first value"
+        keyboardType="numeric"
+        value={value1}
+        onChangeText={setValue1}
+      />
+      <TextInput
+        style={styles.valueBox}
+        placeholder="Enter second value"
+        keyboardType="numeric"
+        value={value2}
+        onChangeText={setValue2}
+      />
+
+      {error !== '' && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
+
+      {result !== null && (
+        <Text style={styles.resultText}>Result: {result}</Text>
+      )}
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('+')}>
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('-')}>
+          <Text style={styles.buttonText}>-</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('x')}>
+          <Text style={styles.buttonText}>x</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('/')}>
+          <Text style={styles.buttonText}>/</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('^')}>
+          <Text style={styles.buttonText}>^</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleOperation('sqrt')}>
+          <Text style={styles.buttonText}>sqrt</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#b5c18e',
+  },
+  calcAppText: {
+    color: '#fff',
+    fontSize: 45,
+    textAlign: 'center', 
+  },
+  valueBox: {
+    height: 50,
+    backgroundColor: 'white',
+    borderColor: 'white', 
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    fontSize: 15,
+    color: '#b5c18e',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  resultText: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#fff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  button: {
+    width: '40%',
+    height: 60,
+    backgroundColor: '#b5c18e',
+    borderColor: 'white', 
+    borderWidth: 1, 
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 24,
+  },
+});
